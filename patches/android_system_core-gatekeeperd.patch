@@ -1,0 +1,33 @@
+diff --git a/gatekeeperd/Android.mk b/gatekeeperd/Android.mk
+index 6d5d1eac4e29ba3554c6c3d3dbfada47f8e1bb4c..9ec90f1ff1f6199ffe59f36ac06645f97cab2d10 100644
+--- a/gatekeeperd/Android.mk
++++ b/gatekeeperd/Android.mk
+@@ -39,6 +39,10 @@ LOCAL_SHARED_LIBRARIES := \
+ 	libhwbinder \
+ 	android.hardware.gatekeeper@1.0 \
+ 
++ifeq ($(strip $(BOARD_USE_SOFT_GATEKEEPER)),true)
++LOCAL_CFLAGS += -DUSE_SOFT_GATEKEEPER
++endif
++
+ LOCAL_STATIC_LIBRARIES := libscrypt_static
+ LOCAL_C_INCLUDES := external/scrypt/lib/crypto
+ LOCAL_INIT_RC := gatekeeperd.rc
+diff --git a/gatekeeperd/gatekeeperd.cpp b/gatekeeperd/gatekeeperd.cpp
+index 5781765786cce0a4e46d3469a354353229d3ae87..3059e9203440f0462bb577684f34afcf7f30522d 100644
+--- a/gatekeeperd/gatekeeperd.cpp
++++ b/gatekeeperd/gatekeeperd.cpp
+@@ -57,9 +57,12 @@ static const String16 DUMP_PERMISSION("android.permission.DUMP");
+ class GateKeeperProxy : public BnGateKeeperService {
+ public:
+     GateKeeperProxy() {
++        #ifdef USE_SOFT_GATEKEEPER
++            hw_device = nullptr;
++        #else
+         clear_state_if_needed_done = false;
+         hw_device = IGatekeeper::getService();
+-
++        #endif
+         if (hw_device == nullptr) {
+             ALOGW("falling back to software GateKeeper");
+             soft_device.reset(new SoftGateKeeperDevice());

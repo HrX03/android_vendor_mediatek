@@ -1,5 +1,5 @@
 diff --git a/camera/device/1.0/default/CameraDevice.cpp b/camera/device/1.0/default/CameraDevice.cpp
-index a1f1830f..a3514386 100644
+index a1f1830fd95cac68cec577c31b51be6cdc80b221..48f2dfcff402f4d966d5b23866aa726cbec74e9a 100644
 --- a/camera/device/1.0/default/CameraDevice.cpp
 +++ b/camera/device/1.0/default/CameraDevice.cpp
 @@ -35,6 +35,7 @@ using ::android::hardware::graphics::common::V1_0::BufferUsage;
@@ -23,7 +23,7 @@ index a1f1830f..a3514386 100644
  #endif
  
      if (mDevice->ops->set_callbacks) {
-+	sUser = this;
++        sUser = this;
          mDevice->ops->set_callbacks(mDevice,
                  sNotifyCb, sDataCb, sDataCbTimestamp, sGetMemory, this);
      }

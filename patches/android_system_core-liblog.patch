@@ -1,5 +1,5 @@
 diff --git a/liblog/logger_write.c b/liblog/logger_write.c
-index d322c0f0d..f5e1bcf3e 100644
+index 2754e6e74c007bc80ba1a6d105d60938e0821d68..ff206d562c0955d544a806977cddaf14518ee4ad 100644
 --- a/liblog/logger_write.c
 +++ b/liblog/logger_write.c
 @@ -29,6 +29,10 @@
@@ -13,7 +13,7 @@ index d322c0f0d..f5e1bcf3e 100644
  #include "config_read.h" /* __android_log_config_read_close() definition */
  #include "config_write.h"
  #include "log_portability.h"
-@@ -405,23 +409,34 @@ LIBLOG_ABI_PUBLIC int __android_log_write(int prio, const char* tag,
+@@ -416,7 +420,7 @@ LIBLOG_ABI_PUBLIC int __android_log_write(int prio, const char* tag,
  LIBLOG_ABI_PUBLIC int __android_log_buf_write(int bufID, int prio,
                                                const char* tag, const char* msg) {
    struct iovec vec[3];
@@ -22,32 +22,10 @@ index d322c0f0d..f5e1bcf3e 100644
  
    if (!tag) tag = "";
  
-   /* XXX: This needs to go! */
-   if ((bufID != LOG_ID_RADIO) &&
--      (!strcmp(tag, "HTC_RIL") ||
--       !strncmp(tag, "RIL", 3) || /* Any log tag with "RIL" as the prefix */
--       !strncmp(tag, "IMS", 3) || /* Any log tag with "IMS" as the prefix */
--       !strcmp(tag, "AT") || !strcmp(tag, "GSM") || !strcmp(tag, "STK") ||
--       !strcmp(tag, "CDMA") || !strcmp(tag, "PHONE") || !strcmp(tag, "SMS"))) {
--    bufID = LOG_ID_RADIO;
--    /* Inform third party apps/ril/radio.. to use Rlog or RLOG */
--    snprintf(tmp_tag, sizeof(tmp_tag), "use-Rlog/RLOG-%s", tag);
--    tag = tmp_tag;
-+	(!strcmp(tag, "HTC_RIL") ||
-+	 !strncmp(tag, "RIL", 3) || /* Any log tag with "RIL" as the prefix */
-+	 !strncmp(tag, "IMS", 3) || /* Any log tag with "IMS" as the prefix */
-+	 !strcmp(tag, "AT") ||
-+	 !strcmp(tag, "GSM") ||
-+	 !strcmp(tag, "STK") ||
-+	 !strcmp(tag, "CDMA") ||
-+	 !strcmp(tag, "PHONE") ||
-+	 !strcmp(tag, "SMS"))) {
-+	bufID = LOG_ID_RADIO;
-+	/* Inform third party apps/ril/radio.. to use Rlog or RLOG */
-+	snprintf(tmp_tag, sizeof(tmp_tag), "use-Rlog/RLOG-%s", tag);
-+	tag = tmp_tag;
+@@ -463,6 +467,15 @@ LIBLOG_ABI_PUBLIC int __android_log_buf_write(int bufID, int prio,
+     }
    }
--
+ 
 +#ifndef FAKE_LOG_DEVICE
 +    /* check property for moving all RIL logs to main */
 +    if (bufID == LOG_ID_RADIO) {
@@ -56,10 +34,11 @@ index d322c0f0d..f5e1bcf3e 100644
 +	    bufID = LOG_ID_MAIN;
 +    }
 +#endif
++
  #if __BIONIC__
    if (prio == ANDROID_LOG_FATAL) {
      android_set_abort_message(msg);
-@@ -671,3 +686,26 @@ LIBLOG_ABI_PUBLIC int android_get_log_transport() {
+@@ -725,3 +738,26 @@ LIBLOG_ABI_PUBLIC int android_get_log_transport() {
  
    return ret;
  }

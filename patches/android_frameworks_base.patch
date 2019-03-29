@@ -1,0 +1,12 @@
+diff --git a/core/jni/fd_utils.cpp b/core/jni/fd_utils.cpp
+index 4ff1cacd95392ad3727b2730557f787926135b7c..580ac2de08c7f34338fd31aa00bb0653cbeea873 100644
+--- a/core/jni/fd_utils.cpp
++++ b/core/jni/fd_utils.cpp
+@@ -43,6 +43,7 @@ static const char* kPathWhitelist[] = {
+   "/dev/urandom",
+   "/dev/ion",
+   "/dev/dri/renderD129", // Fixes b/31172436
++  "/proc/ged",
+ };
+ 
+ static const char kFdPath[] = "/proc/self/fd";
