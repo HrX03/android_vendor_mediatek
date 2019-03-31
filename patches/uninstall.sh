@@ -9,6 +9,8 @@ cd ../..
 cd frameworks/base
 git reset --hard && git clean -fd
 cd ../..
-cd hardware/interfaces
-git reset --hard && git clean -fd
-cd ../..
+
+
+
+
+

@@ -12,6 +12,8 @@ cd ../..
 cd frameworks/base
 patch -p1 <../../vendor/mediatek/patches/android_frameworks_base.patch
 cd ../..
-cd hardware/interfaces
-patch -p1 < ../../vendor/mediatek/patches/android_hardware_interfaces-cameradevice.patch
-cd ../..
+
+
+
+
+
